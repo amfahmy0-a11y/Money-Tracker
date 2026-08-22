@@ -28,3 +28,4 @@ android.armeabi_v7a = 1
 android.arm64_v8a = 1
 android.x86 = 1
 android.x86_64 = 1
+log_level = 2
