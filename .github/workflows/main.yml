@@ -1,4 +1,4 @@
-name: Build APK
+name: Build APK using p4a
 
 on:
   push:
@@ -18,29 +18,40 @@ jobs:
       with:
         python-version: '3.11'
 
-    - name: Install dependencies
+    - name: Install system dependencies
       run: |
         sudo apt update
         sudo apt install -y git zip unzip openjdk-17-jdk python3-pip autoconf libtool pkg-config zlib1g-dev libncurses5-dev libncursesw5-dev cmake libffi-dev libssl-dev
+
+    - name: Install Python packages
+      run: |
         pip install --upgrade pip
-        pip install buildozer cython
+        pip install cython setuptools
 
-    - name: Clean buildozer cache
+    - name: Install p4a (python-for-android)
       run: |
-        rm -rf ~/.buildozer
-        rm -rf .buildozer
+        git clone https://github.com/kivy/python-for-android.git
+        cd python-for-android
+        python setup.py install
+        cd ..
 
-    - name: Accept Android SDK licenses
+    - name: Build APK using p4a
       run: |
-        yes | /home/runner/.buildozer/android/platform/android-sdk/tools/bin/sdkmanager --licenses || true
-
-    - name: Build APK
-      run: |
-        yes | buildozer -v android debug
+        export PATH=$PATH:~/.local/bin
+        p4a apk --private . \
+                --package=org.moneytracker \
+                --name "MoneyTracker" \
+                --version 1.0 \
+                --bootstrap=sdl2 \
+                --requirements=python3,kivy==2.3.0,kivymd==2.0.0,matplotlib==3.8.0,Pillow==9.5.0 \
+                --arch=arm64-v8a \
+                --android-api=33 \
+                --ndk-api=24 \
+                --output-dir=./dist
 
     - name: Upload APK
       uses: actions/upload-artifact@v4
       with:
         name: MoneyTracker-APK
-        path: bin/*.apk
+        path: ./dist/*.apk
         if-no-files-found: error
