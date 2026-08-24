@@ -5,7 +5,7 @@ package.domain = org.moneytracker
 
 version = 1.0.0
 
-requirements = python3,kivy==2.3.0,kivymd==2.0.0,matplotlib==3.8.0,Pillow==10.0.0
+requirements = python3==3.11.0,kivy==2.3.0,kivymd==2.0.0,matplotlib==3.8.0,Pillow==10.0.0
 
 source.dir = .
 source.include_exts = py,png,jpg,kv,atlas,ttf
@@ -38,3 +38,4 @@ android.armeabi_v7a = 1
 android.arm64_v8a = 1
 android.x86 = 1
 android.x86_64 = 1
+p4a.branch = develop
